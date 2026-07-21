@@ -1,0 +1,76 @@
+import React from 'react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { TRUST_REASONS } from '../types';
+
+export function About() {
+  return (
+    <section id="about" className="py-24 bg-beige-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          <div className="relative">
+            <div className="aspect-[4/5] rounded-sm overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80" 
+                alt="Modern Real Estate Interior" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-8 -right-8 bg-navy-900 text-white p-8 rounded-sm shadow-xl hidden md:block">
+              <p className="text-4xl font-bold text-gold-500 mb-1">5+</p>
+              <p className="text-sm font-medium tracking-wide uppercase">Years of<br />Excellence</p>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2 text-gold-600 font-bold tracking-widest uppercase text-sm mb-4">
+              <span className="w-8 h-0.5 bg-gold-600"></span>
+              About Us
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold text-navy-900 mb-6 leading-tight">
+              More Than Property Sales—Professional Guidance
+            </h2>
+            <div className="prose prose-lg text-gray-600 mb-10 font-light leading-relaxed">
+              <p>
+                Buying a home is one of life's biggest financial decisions. Choosing the right advisor can make all the difference.
+              </p>
+              <p className="text-navy-900 font-medium">
+                I am D. M. Nagesh, a RERA Registered Channel Partner helping families, professionals, NRIs, and investors find the right property across Bangalore.
+              </p>
+              <p>
+                Rather than simply selling apartments, my goal is to understand your needs and recommend properties that genuinely fit your lifestyle, financial goals, and future plans.
+              </p>
+            </div>
+            
+            <a href="#consultation" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
+              <span>Read Full Story</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+
+        </div>
+
+        {/* Why Choose Us Grid */}
+        <div className="mt-32">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h3 className="text-3xl font-bold text-navy-900 mb-4">Why Buyers Trust Us</h3>
+            <p className="text-gray-600">Delivering exceptional real estate experiences through transparency, dedication, and expert knowledge.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {TRUST_REASONS.map((reason, index) => (
+              <div key={index} className="bg-white p-8 rounded-sm shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+                <div className="w-12 h-12 bg-beige-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-navy-900 transition-colors">
+                  <CheckCircle2 className="w-6 h-6 text-gold-600" />
+                </div>
+                <h4 className="font-bold text-navy-900 mb-3">{reason.title}</h4>
+                <p className="text-sm text-gray-600 leading-relaxed font-light">{reason.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}

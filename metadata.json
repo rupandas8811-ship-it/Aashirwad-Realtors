@@ -1,0 +1,6 @@
+{
+  "name": "Aashirwad Realtors",
+  "description": "Professional Real Estate Guidance in Bangalore",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
