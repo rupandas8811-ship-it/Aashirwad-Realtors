@@ -85,10 +85,15 @@ export function Subscription() {
               ))}
             </ul>
 
-            <button className="w-full py-4 bg-navy-900 hover:bg-navy-800 text-white rounded-sm font-bold text-lg transition-colors flex items-center justify-center gap-2 group">
-              Join the Community
+            <a 
+              href="https://wa.me/919742636365?text=Hi%20Mr.%20Nagesh,%20I%20would%20like%20to%20join%20The%20Bangalore%20Property%20Circle%20and%20pay%20the%20Rs.1000%20membership%20fee." 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full py-4 bg-navy-900 hover:bg-navy-800 text-white rounded-sm font-bold text-lg transition-colors flex items-center justify-center gap-2 group"
+            >
+              Join via WhatsApp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </a>
           </div>
 
         </div>

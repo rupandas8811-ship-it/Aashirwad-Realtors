@@ -1,6 +1,27 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
 
+const TESTIMONIALS = [
+  {
+    text: "Mr. Nagesh patiently explained every option, arranged site visits, and negotiated the best offer. Couldn't have asked for a better advisor.",
+    name: "Arjun & Priya",
+    type: "Happy Homebuyers, Bangalore",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80"
+  },
+  {
+    text: "Very professional and transparent. He understood my investment goals and found a property with excellent rental yield potential.",
+    name: "Rajesh Kumar",
+    type: "NRI Investor",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80"
+  },
+  {
+    text: "The end-to-end support was incredible. From the first site visit to the final paperwork, Aashirwad Realtors made it seamless.",
+    name: "Sneha Reddy",
+    type: "First-Time Buyer",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80"
+  }
+];
+
 export function Testimonials() {
   return (
     <section className="py-24 bg-white">
@@ -18,32 +39,36 @@ export function Testimonials() {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-navy-900 rounded-sm p-8 md:p-16 border border-navy-800 relative shadow-2xl">
-            <div className="absolute top-8 left-8 text-gold-500/20">
-              <Quote className="w-24 h-24" />
-            </div>
-            
-            <div className="relative z-10 text-center">
-              <div className="flex justify-center gap-2 mb-8">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-gold-500 fill-current" />
-                ))}
+        <div className="grid md:grid-cols-3 gap-8">
+          {TESTIMONIALS.map((testimonial, idx) => (
+            <div key={idx} className="bg-navy-900 rounded-sm p-8 border border-navy-800 relative shadow-xl flex flex-col">
+              <div className="absolute top-6 left-6 text-gold-500/10">
+                <Quote className="w-16 h-16" />
               </div>
               
-              <blockquote className="text-xl md:text-3xl text-beige-50 font-medium leading-relaxed mb-10 italic">
-                "We were confused about choosing between multiple builders. Mr. Nagesh patiently explained every option, arranged site visits, negotiated the best offer, and supported us throughout the booking process. We couldn't have asked for a better advisor."
-              </blockquote>
-              
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-beige-100 rounded-full mb-4 overflow-hidden border-2 border-gold-500">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80" alt="Customer" className="w-full h-full object-cover" />
+              <div className="relative z-10 flex-1 flex flex-col">
+                <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-gold-500 fill-current" />
+                  ))}
                 </div>
-                <p className="font-bold text-gold-500 text-lg uppercase tracking-wider">Arjun & Priya</p>
-                <p className="text-beige-200 text-sm">Happy Homebuyers, Bangalore</p>
+                
+                <blockquote className="text-beige-50 font-medium leading-relaxed mb-8 italic flex-1">
+                  "{testimonial.text}"
+                </blockquote>
+                
+                <div className="flex items-center gap-4 mt-auto">
+                  <div className="w-12 h-12 bg-beige-100 rounded-full overflow-hidden border-2 border-gold-500 flex-shrink-0">
+                    <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gold-500 uppercase tracking-wider text-sm">{testimonial.name}</p>
+                    <p className="text-beige-200 text-xs">{testimonial.type}</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
 
       </div>

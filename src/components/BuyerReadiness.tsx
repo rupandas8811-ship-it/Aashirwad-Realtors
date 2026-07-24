@@ -1,7 +1,7 @@
 import React from 'react';
 import { ClipboardList, ArrowRight } from 'lucide-react';
 
-export function BuyerReadiness() {
+export function BuyerReadiness({ onTakeTest }: { onTakeTest: () => void }) {
   const assessmentItems = [
     "Your purpose of buying",
     "Budget",
@@ -33,7 +33,10 @@ export function BuyerReadiness() {
               Buying property requires careful planning. Before scheduling a consultation, complete our Buyer Readiness Assessment to help us understand your exact needs.
             </p>
             
-            <button className="bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold text-lg inline-flex items-center gap-2 transition-all shadow-lg transform hover:-translate-y-0.5">
+            <button 
+              onClick={onTakeTest}
+              className="bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold text-lg inline-flex items-center gap-2 transition-all shadow-lg transform hover:-translate-y-0.5"
+            >
               Take the Readiness Test
               <ArrowRight className="w-5 h-5" />
             </button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Phone, ShieldCheck, Search, MapPin, Home, IndianRupee } from 'lucide-react';
+import { ArrowRight, Phone, ShieldCheck } from 'lucide-react';
 
 export function Hero() {
   return (
@@ -29,38 +29,6 @@ export function Hero() {
           <p className="text-lg md:text-xl text-beige-100 mb-10 leading-relaxed max-w-2xl font-light">
             Whether you're buying your first home, upgrading to a premium residence, or investing in Bangalore's growing market.
           </p>
-          
-          {/* Real Estate Search Bar */}
-          <div className="bg-white p-2 rounded-md shadow-2xl mb-10 max-w-4xl">
-            <div className="flex flex-col md:flex-row gap-2">
-              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-beige-50 rounded-sm border border-gray-100">
-                <MapPin className="w-5 h-5 text-navy-600" />
-                <input type="text" placeholder="Location in Bangalore..." className="w-full bg-transparent outline-none text-navy-900 placeholder-gray-500 text-sm font-medium" />
-              </div>
-              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-beige-50 rounded-sm border border-gray-100">
-                <Home className="w-5 h-5 text-navy-600" />
-                <select className="w-full bg-transparent outline-none text-navy-900 text-sm font-medium cursor-pointer">
-                  <option>Property Type</option>
-                  <option>Apartment</option>
-                  <option>Villa</option>
-                  <option>Plot / Land</option>
-                </select>
-              </div>
-              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-beige-50 rounded-sm border border-gray-100">
-                <IndianRupee className="w-5 h-5 text-navy-600" />
-                <select className="w-full bg-transparent outline-none text-navy-900 text-sm font-medium cursor-pointer">
-                  <option>Budget</option>
-                  <option>Under 1 Cr</option>
-                  <option>1 Cr - 3 Cr</option>
-                  <option>Above 3 Cr</option>
-                </select>
-              </div>
-              <button className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3 rounded-sm font-bold flex items-center justify-center gap-2 transition-colors md:w-auto w-full">
-                <Search className="w-5 h-5" />
-                <span>Search</span>
-              </button>
-            </div>
-          </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <a href="#consultation" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-lg">

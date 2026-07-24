@@ -10,13 +10,12 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'About', href: '#about' },
   { label: 'Builders', href: '#builders' },
   { label: 'Readiness Test', href: '#readiness' },
-  { label: 'Resources', href: '#resources' },
   { label: 'Subscription', href: '#subscription' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export const BUILDER_PARTNERS = [
-  "Puravankara", "Provident Housing", "Birla Estates", "Godrej Properties",
+  "The House Of Abhinandan Lodha", "Puravankara", "Provident Housing", "Birla Estates", "Godrej Properties",
   "Sobha Limited", "Shriram Properties", "DNR Group", "Prestige Group",
   "Brigade Group", "Assetz Property Group", "Lodha", "Salarpuria Sattva",
   "Mahindra Lifespaces", "Embassy Group", "Century Real Estate",
