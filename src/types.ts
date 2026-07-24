@@ -7,11 +7,12 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'About', href: '#about' },
-  { label: 'Builders', href: '#builders' },
-  { label: 'Readiness Test', href: '#readiness' },
-  { label: 'Subscription', href: '#subscription' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Builders', href: '/builders' },
+  { label: 'Readiness Test', href: '/readiness-test' },
+  { label: 'Subscription', href: '/subscription' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export const BUILDER_PARTNERS = [

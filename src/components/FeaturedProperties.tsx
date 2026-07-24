@@ -55,7 +55,7 @@ export function FeaturedProperties() {
               Featured Properties
             </h2>
           </div>
-          <a href="#consultation" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
+          <a href="/contact" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
             <span>View All Properties</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </a>

@@ -11,8 +11,8 @@ export function About() {
           <div className="relative">
             <div className="aspect-[4/5] rounded-sm overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80" 
-                alt="Modern Real Estate Interior" 
+                src="https://wqhbuwisqncwadomxwuf.supabase.co/storage/v1/object/public/tmg/WhatsApp%20Image%202026-07-23%20at%2012.03.54%20PM%20(1).jpeg" 
+                alt="D. M. Nagesh" 
                 className="w-full h-full object-cover"
               />
             </div>
@@ -30,7 +30,7 @@ export function About() {
             <h2 className="text-3xl md:text-5xl font-bold text-navy-900 mb-6 leading-tight">
               More Than Property Sales—Professional Guidance
             </h2>
-            <div className="prose prose-lg text-gray-600 mb-10 font-light leading-relaxed">
+            <div className="prose prose-lg text-gray-600 mb-8 font-light leading-relaxed">
               <p>
                 Buying a home is one of life's biggest financial decisions. Choosing the right advisor can make all the difference.
               </p>
@@ -42,7 +42,15 @@ export function About() {
               </p>
             </div>
             
-            <a href="#consultation" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
+            <div className="mb-8">
+              <img 
+                src="https://wqhbuwisqncwadomxwuf.supabase.co/storage/v1/object/public/tmg/WhatsApp%20Image%202026-07-23%20at%2012.03.54%20PM.jpeg" 
+                alt="D. M. Nagesh with client" 
+                className="w-full max-w-sm h-48 md:h-64 object-cover rounded-sm shadow-sm"
+              />
+            </div>
+            
+            <a href="/contact" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
               <span>Read Full Story</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>

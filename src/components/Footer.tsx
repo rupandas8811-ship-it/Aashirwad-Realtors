@@ -8,8 +8,19 @@ export function Footer() {
         <div className="grid md:grid-cols-3 gap-16 mb-16">
           
           <div className="md:col-span-1">
-            <h3 className="text-white text-2xl font-bold mb-2">Aashirwad Realtors</h3>
-            <p className="text-gold-500 text-xs font-bold uppercase tracking-widest mb-6">D. M. Nagesh</p>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg ">
+                <img 
+                  src="https://wqhbuwisqncwadomxwuf.supabase.co/storage/v1/object/public/tmg/Untitled%20design%20(4)-Picsart-BackgroundRemover.png" 
+                  alt="Aashirwad Realtors Logo" 
+                  className="w-full h-full object-contain p-1"
+                />
+              </div>
+              <div>
+                <h3 className="text-white text-xl font-bold leading-tight">Aashirwad Realtors</h3>
+                <p className="text-gold-500 text-xs font-bold uppercase tracking-widest">D. M. Nagesh</p>
+              </div>
+            </div>
             <p className="text-sm leading-relaxed mb-6 font-light text-beige-100">
               Your Trusted Real Estate Advisor in Bangalore. Helping homebuyers and investors make informed property decisions through transparent advice, verified projects, and end-to-end assistance.
             </p>
@@ -39,8 +50,10 @@ export function Footer() {
         </div>
         
         <div className="pt-8 border-t border-navy-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-beige-200 font-medium">
-            © {new Date().getFullYear()} Aashirwad Realtors. All rights reserved.
+          <p className="text-xs text-beige-200 font-medium flex items-center gap-4">
+            <span>© {new Date().getFullYear()} Aashirwad Realtors. All rights reserved.</span>
+            <span className="hidden md:inline text-navy-800">|</span>
+            <a href="/admin" className="hover:text-gold-500 transition-colors">Staff Login</a>
           </p>
           <p className="text-xs text-gold-500 font-bold tracking-widest uppercase">
             RERA: PRM/KA/RERA/1251/310/AG/220203/002771

@@ -29,7 +29,10 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
   const handleNext = () => setStep(prev => prev + 1);
   const handlePrev = () => setStep(prev => prev - 1);
 
-  const calculateScore = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const calculateScore = async () => {
+    setIsSubmitting(true);
     let currentScore = 0;
 
     // Q1 (max 10)
@@ -84,6 +87,24 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
     // Normalize to 100 max
     const finalScore = Math.min(100, Math.round((currentScore / 110) * 100));
     setScore(finalScore);
+    
+    let cat = 'Awareness';
+    if (finalScore >= 90) cat = 'Platinum Buyer';
+    else if (finalScore >= 75) cat = 'Hot Buyer';
+    else if (finalScore >= 60) cat = 'Warm Buyer';
+    else if (finalScore >= 40) cat = 'Nurture';
+    
+    try {
+      await fetch('/api/readiness', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers, score: finalScore, category: cat })
+      });
+    } catch (e) {
+      console.error("Failed to save readiness test", e);
+    }
+
+    setIsSubmitting(false);
     setStep(11);
   };
 
@@ -373,9 +394,10 @@ Here are my responses:
               ) : (
                 <button 
                   onClick={calculateScore}
-                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors shadow-lg"
+                  disabled={isSubmitting}
+                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors shadow-lg disabled:opacity-75"
                 >
-                  See My Result <ArrowRight className="w-4 h-4" />
+                  {isSubmitting ? 'Calculating...' : 'See My Result'} <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </div>

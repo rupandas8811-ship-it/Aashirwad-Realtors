@@ -1,7 +1,38 @@
-import React from 'react';
-import { Calendar, CheckCircle, Mail, Phone, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, CheckCircle, Mail, Phone, ArrowRight, Loader2 } from 'lucide-react';
 
 export function Consultation() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    lookingFor: 'First Home'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const res = await fetch('/api/consultation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setIsSuccess(true);
+        setFormData({ fullName: '', phone: '', email: '', lookingFor: 'First Home' });
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to schedule consultation. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const features = [
     "Requirement Analysis", "Budget Planning", "Builder Comparison", 
     "Project Shortlisting", "Site Visit Planning", "Investment Advice", 
@@ -36,38 +67,79 @@ export function Consultation() {
               Book Your Free Consultation
             </h3>
             
-            <form className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Full Name</label>
-                  <input type="text" className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" placeholder="John Doe" />
+            {isSuccess ? (
+              <div className="bg-beige-50 border-l-4 border-gold-500 p-8 text-center h-full flex flex-col justify-center">
+                <CheckCircle className="w-16 h-16 text-gold-500 mx-auto mb-4" />
+                <h4 className="text-2xl font-bold text-navy-900 mb-2">Request Received!</h4>
+                <p className="text-gray-600">Mr. Nagesh's team will contact you shortly to schedule your personalized consultation.</p>
+                <button onClick={() => setIsSuccess(false)} className="mt-8 text-gold-600 font-bold hover:text-gold-700">Book another</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Full Name</label>
+                    <input 
+                      required type="text" 
+                      value={formData.fullName}
+                      onChange={e => setFormData({...formData, fullName: e.target.value})}
+                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                      placeholder="John Doe" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Phone Number</label>
+                    <input 
+                      required type="tel" 
+                      value={formData.phone}
+                      onChange={e => setFormData({...formData, phone: e.target.value})}
+                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                      placeholder="+91 98765 43210" 
+                    />
+                  </div>
                 </div>
+                
                 <div>
-                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Phone Number</label>
-                  <input type="tel" className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" placeholder="+91 98765 43210" />
+                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Email Address</label>
+                  <input 
+                    required type="email" 
+                    value={formData.email}
+                    onChange={e => setFormData({...formData, email: e.target.value})}
+                    className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                    placeholder="john@example.com" 
+                  />
                 </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Email Address</label>
-                <input type="email" className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" placeholder="john@example.com" />
-              </div>
 
-              <div>
-                <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">What are you looking for?</label>
-                <select className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all cursor-pointer">
-                  <option>First Home</option>
-                  <option>Upgrading Home</option>
-                  <option>Investment Property</option>
-                  <option>Commercial Property</option>
-                </select>
-              </div>
+                <div>
+                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">What are you looking for?</label>
+                  <select 
+                    value={formData.lookingFor}
+                    onChange={e => setFormData({...formData, lookingFor: e.target.value})}
+                    className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all cursor-pointer"
+                  >
+                    <option>First Home</option>
+                    <option>Upgrading Home</option>
+                    <option>Investment Property</option>
+                    <option>Commercial Property</option>
+                  </select>
+                </div>
 
-              <button type="button" className="w-full bg-navy-900 hover:bg-navy-800 text-white font-bold py-4 rounded-sm transition-colors mt-4 flex items-center justify-center gap-2 group">
-                Schedule Consultation
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </form>
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full bg-navy-900 hover:bg-navy-800 text-white font-bold py-4 rounded-sm transition-colors mt-4 flex items-center justify-center gap-2 group disabled:opacity-75"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      Schedule Consultation
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
           </div>
 
           <div className="lg:col-span-2 bg-navy-900 text-white p-8 md:p-12 relative overflow-hidden">

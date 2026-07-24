@@ -31,7 +31,7 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <a href="#consultation" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-lg">
+            <a href="/contact" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-lg">
               Schedule a Visit
               <ArrowRight className="w-5 h-5" />
             </a>
