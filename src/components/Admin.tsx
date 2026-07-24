@@ -147,7 +147,7 @@ export function Admin() {
 
   const statusOptions = ['New', 'Contacted', 'Scheduled', 'Completed', 'Closed'];
 
-  const EditableRow = ({ item, type }: { item: any, type: 'readiness'|'consultation' }) => {
+  const EditableRow = ({ item, type }: { item: any, type: 'readiness'|'consultation', key?: React.Key }) => {
     const [notes, setNotes] = useState(item.adminNotes);
     const [status, setStatus] = useState(item.status);
     const [isSaving, setIsSaving] = useState(false);
@@ -174,6 +174,9 @@ export function Admin() {
                 <>
                   <h3 className="text-lg font-bold text-navy-900">Score: {item.score}/100</h3>
                   <p className="text-sm font-medium text-gold-600 uppercase tracking-widest">{item.category}</p>
+                  {item.fullName && (
+                    <p className="text-gray-600 text-sm mt-1">{item.fullName} | {item.email} | {item.phone} | {item.city}</p>
+                  )}
                 </>
               )}
             </div>

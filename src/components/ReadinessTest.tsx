@@ -7,6 +7,12 @@ interface ReadinessTestProps {
 
 export function ReadinessTest({ onClose }: ReadinessTestProps) {
   const [step, setStep] = useState(0); // 0 is intro, 1-10 are questions, 11 is result
+  const [basicDetails, setBasicDetails] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    city: ''
+  });
   const [answers, setAnswers] = useState<Record<string, any>>({
     q1: '',
     q2: '',
@@ -98,7 +104,12 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
       await fetch('/api/readiness', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, score: finalScore, category: cat })
+        body: JSON.stringify({ 
+          answers, 
+          score: finalScore, 
+          category: cat,
+          ...basicDetails
+        })
       });
     } catch (e) {
       console.error("Failed to save readiness test", e);
@@ -330,33 +341,47 @@ Here are my responses:
     <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
       <div className="max-w-3xl mx-auto px-4 py-8 md:py-16 min-h-screen flex flex-col">
         {step === 0 && (
-          <div className="flex-1 flex flex-col justify-center animate-fade-in">
-            <div className="w-16 h-16 bg-beige-50 rounded-full flex items-center justify-center mb-8 border border-gold-500">
+          <div className="flex-1 flex flex-col justify-center animate-fade-in max-w-2xl mx-auto w-full">
+            <div className="w-16 h-16 bg-beige-50 rounded-full flex items-center justify-center mb-6 border border-gold-500">
               <ShieldAlert className="w-8 h-8 text-gold-600" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-navy-900 mb-6">The Buyer Readiness Score™</h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Every prospect completes this assessment before booking a consultation. The questionnaire is intentionally designed to make you think.
+            <h1 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">The Buyer Readiness Score™</h1>
+            <p className="text-lg text-gray-600 mb-6">
+              Every prospect completes this assessment before booking a consultation. Please provide your basic details to begin.
             </p>
-            <div className="bg-beige-50 p-6 rounded-sm border-l-4 border-gold-500 mb-10">
-              <p className="text-navy-900 font-medium">
-                If someone cannot answer these questions seriously, they are unlikely to make a property purchase. This takes about 2-3 minutes.
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setStep(1)}
-                className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-4 rounded-sm font-bold flex items-center gap-2 transition-colors"
-              >
-                Begin Assessment <ArrowRight className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={onClose}
-                className="px-8 py-4 text-navy-900 font-bold hover:bg-gray-50 rounded-sm transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
+            <form onSubmit={(e) => { e.preventDefault(); setStep(1); }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input required type="text" value={basicDetails.fullName} onChange={e => setBasicDetails({...basicDetails, fullName: e.target.value})} className="w-full p-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-navy-900 outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                <input required type="tel" value={basicDetails.phone} onChange={e => setBasicDetails({...basicDetails, phone: e.target.value})} className="w-full p-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-navy-900 outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input required type="email" value={basicDetails.email} onChange={e => setBasicDetails({...basicDetails, email: e.target.value})} className="w-full p-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-navy-900 outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input required type="text" value={basicDetails.city} onChange={e => setBasicDetails({...basicDetails, city: e.target.value})} className="w-full p-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-navy-900 outline-none" />
+              </div>
+              <div className="pt-4 flex gap-4">
+                <button 
+                  type="submit"
+                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-4 rounded-sm font-bold flex items-center justify-center gap-2 transition-colors flex-1"
+                >
+                  Begin Assessment <ArrowRight className="w-5 h-5" />
+                </button>
+                <button 
+                  type="button"
+                  onClick={onClose}
+                  className="px-8 py-4 text-navy-900 font-bold hover:bg-gray-50 rounded-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         )}
 

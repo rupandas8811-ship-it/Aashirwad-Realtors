@@ -25,6 +25,10 @@ async function startServer() {
       let category = data.category;
       
       const result = await db.insert(readinessTests).values({
+        fullName: data.fullName,
+        phone: data.phone,
+        email: data.email,
+        city: data.city,
         answers: data.answers,
         score,
         category,

@@ -9,6 +9,10 @@ export const staff = pgTable("staff", {
 
 export const readinessTests = pgTable("readiness_tests", {
   id: serial("id").primaryKey(),
+  fullName: text("full_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  city: text("city").notNull(),
   answers: jsonb("answers").notNull(),
   score: integer("score").notNull(),
   category: text("category").notNull(),
