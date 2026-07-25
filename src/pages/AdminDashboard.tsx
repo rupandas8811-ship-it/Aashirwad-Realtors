@@ -28,15 +28,22 @@ export function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
-      const data = await res.json();
-      if (res.ok) {
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        throw new Error('Unable to login. Please try again.');
+      }
+      
+      if (res.ok && data.success) {
         setToken(data.token);
         localStorage.setItem('adminToken', data.token);
       } else {
-        setLoginError(data.error || 'Invalid credentials');
+        setLoginError(data.message || 'Invalid mobile number or password.');
       }
-    } catch (e) {
-      setLoginError('Server error. Try again.');
+    } catch (e: any) {
+      setLoginError(e.message || 'Unable to login. Please try again.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -88,7 +95,7 @@ export function AdminDashboard() {
               </div>
             )}
             <div>
-              <label className="block text-sm font-bold text-navy-900 mb-1">Username</label>
+              <label className="block text-sm font-bold text-navy-900 mb-1">Mobile Number</label>
               <input 
                 required 
                 type="text" 
@@ -112,7 +119,7 @@ export function AdminDashboard() {
               disabled={isLoggingIn}
               className="w-full bg-navy-900 hover:bg-navy-800 text-white p-3 rounded-sm font-bold transition-colors flex items-center justify-center disabled:opacity-70"
             >
-              {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Login'}
+              {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Access Dashboard'}
             </button>
           </form>
         </div>

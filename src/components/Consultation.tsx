@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, CheckCircle, Mail, Phone, ArrowRight, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export function Consultation() {
   const [formData, setFormData] = useState({
@@ -18,20 +19,26 @@ export function Consultation() {
     setSubmitError('');
     
     try {
-      const res = await fetch('/api/consultation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        setIsSuccess(true);
-        setFormData({ fullName: '', phone: '', email: '', lookingFor: 'First Home' });
-      } else {
-        throw new Error('Failed to submit consultation');
+      const payload = {
+        full_name: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        looking_for: formData.lookingFor
+      };
+      
+      const { error } = await supabase
+        .from('consultations')
+        .insert([payload]);
+
+      if (error) {
+        console.error('Consultation Supabase Error:', error);
+        throw error;
       }
+      setIsSuccess(true);
+      setFormData({ fullName: '', phone: '', email: '', lookingFor: 'First Home' });
     } catch (e) {
       console.error(e);
-      setSubmitError('Failed to schedule consultation. Please try again.');
+      setSubmitError('Unable to submit. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

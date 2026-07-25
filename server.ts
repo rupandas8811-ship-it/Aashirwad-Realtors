@@ -77,27 +77,28 @@ async function startServer() {
   // Admin Login Endpoint
   app.post('/api/admin/login', async (req, res) => {
     try {
+      res.setHeader('Content-Type', 'application/json');
       const { username, password } = req.body;
       
       const adminUser = await db.select().from(staff).where(eq(staff.username, username)).limit(1);
       
       if (adminUser.length === 0) {
-        return res.status(401).json({ error: "Invalid username or password" });
+        return res.status(401).json({ success: false, message: "Invalid mobile number or password" });
       }
 
       const isValid = await bcrypt.compare(password, adminUser[0].passwordHash);
       if (!isValid) {
-        return res.status(401).json({ error: "Invalid username or password" });
+        return res.status(401).json({ success: false, message: "Invalid mobile number or password" });
       }
 
       const token = jwt.sign({ id: adminUser[0].id, username: adminUser[0].username }, JWT_SECRET, {
         expiresIn: '24h'
       });
 
-      res.json({ token });
+      return res.json({ success: true, user: { id: adminUser[0].id, username: adminUser[0].username }, token });
     } catch (e: any) {
       console.error(e);
-      res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ success: false, message: "Unable to login. Please try again." });
     }
   });
 

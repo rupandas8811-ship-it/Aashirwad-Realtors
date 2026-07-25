@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface ReadinessTestProps {
   onClose: () => void;
@@ -103,23 +104,28 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
     else if (finalScore >= 40) cat = 'Nurture';
     
     try {
-      const res = await fetch('/api/readiness', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          answers, 
-          score: finalScore, 
-          category: cat,
-          ...basicDetails
-        })
-      });
-      if (!res.ok) {
-        throw new Error('Failed to save readiness test');
+      const payload = {
+        answers,
+        score: finalScore,
+        category: cat,
+        full_name: basicDetails.fullName,
+        phone: basicDetails.phone,
+        email: basicDetails.email,
+        city: basicDetails.city
+      };
+      
+      const { error } = await supabase
+        .from('readiness_tests')
+        .insert([payload]);
+
+      if (error) {
+        console.error('Readiness Test Supabase Error:', error);
+        throw error;
       }
       setStep(11);
     } catch (e) {
       console.error("Failed to save readiness test", e);
-      setSubmitError("Failed to submit. Please try again.");
+      setSubmitError("Unable to submit. Please try again.");
     }
 
     setIsSubmitting(false);
