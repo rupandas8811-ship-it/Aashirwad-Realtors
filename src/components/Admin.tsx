@@ -32,10 +32,10 @@ export function Admin() {
       // Map the DB snake_case to camelCase
       const mappedReadiness = (readinessData || []).map(r => ({
         ...r,
-        fullName: c.full_name,
-        adminNotes: c.admin_notes,
-        createdAt: c.created_at,
-        updatedAt: c.updated_at
+        fullName: r.full_name,
+        adminNotes: r.admin_notes,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at
       }));
       
       const mappedConsults = (consultData || []).map(c => ({
