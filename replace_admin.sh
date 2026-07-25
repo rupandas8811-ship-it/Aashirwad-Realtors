@@ -1,3 +1,4 @@
+cat << 'INNER_EOF' > src/components/Admin.tsx
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Shield, LogOut, Loader2, Save, XCircle } from 'lucide-react';
@@ -32,19 +33,19 @@ export function Admin() {
       // Map the DB snake_case to camelCase
       const mappedReadiness = (readinessData || []).map(r => ({
         ...r,
-        fullName: c.full_name,
-        adminNotes: c.admin_notes,
-        createdAt: c.created_at,
-        updatedAt: c.updated_at
+        fullName: r.full_name,
+        adminNotes: r.admin_notes,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at
       }));
       
       const mappedConsults = (consultData || []).map(c => ({
         ...c,
-        fullName: c.full_name,
-        lookingFor: c.looking_for,
-        adminNotes: c.admin_notes,
-        createdAt: c.created_at,
-        updatedAt: c.updated_at
+        fullName: r.full_name,
+        lookingFor: r.looking_for,
+        adminNotes: r.admin_notes,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at
       }));
 
       setReadiness(mappedReadiness);
@@ -306,3 +307,4 @@ export function Admin() {
     </div>
   );
 }
+INNER_EOF
