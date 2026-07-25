@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, Mail, Phone, ArrowRight, Loader2 } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Mail, Phone, ArrowRight, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export function Consultation() {
@@ -7,14 +7,31 @@ export function Consultation() {
     fullName: '',
     phone: '',
     email: '',
-    lookingFor: 'First Home'
+    lookingFor: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  const propertyOptions = [
+    "Economy Apartments",
+    "Premium Apartments",
+    "Luxury Apartments",
+    "Ultra Luxury Apartments",
+    "Villas",
+    "Gated Communities",
+    "Investment Properties",
+    "Rental Yield Projects"
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.lookingFor) {
+      setSubmitError('Please select what you are looking for.');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError('');
     
@@ -34,8 +51,9 @@ export function Consultation() {
         console.error('Consultation Supabase Error:', error);
         throw error;
       }
+
       setIsSuccess(true);
-      setFormData({ fullName: '', phone: '', email: '', lookingFor: 'First Home' });
+      setFormData({ fullName: '', phone: '', email: '', lookingFor: '' });
     } catch (e) {
       console.error(e);
       setSubmitError('Unable to submit. Please try again.');
@@ -126,18 +144,30 @@ export function Consultation() {
                   />
                 </div>
 
-                <div>
+                <div className="space-y-3">
                   <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">What are you looking for?</label>
-                  <select 
-                    value={formData.lookingFor}
-                    onChange={e => setFormData({...formData, lookingFor: e.target.value})}
-                    className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all cursor-pointer"
-                  >
-                    <option>First Home</option>
-                    <option>Upgrading Home</option>
-                    <option>Investment Property</option>
-                    <option>Commercial Property</option>
-                  </select>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {propertyOptions.map((option) => (
+                      <div 
+                        key={option}
+                        onClick={() => setFormData({...formData, lookingFor: option})}
+                        className={`flex items-center gap-3 p-4 rounded-sm border cursor-pointer transition-all ${
+                          formData.lookingFor === option
+                            ? 'border-gold-500 bg-beige-100'
+                            : 'border-gray-200 bg-white hover:border-gold-400 hover:bg-beige-50'
+                        }`}
+                      >
+                        {formData.lookingFor === option ? (
+                          <CheckCircle className="w-5 h-5 text-gold-500 flex-shrink-0" />
+                        ) : (
+                          <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />
+                        )}
+                        <span className={`text-sm font-bold ${formData.lookingFor === option ? 'text-navy-900' : 'text-gray-600'}`}>
+                          {option}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <button 

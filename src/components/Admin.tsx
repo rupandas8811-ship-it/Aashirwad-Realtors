@@ -53,12 +53,22 @@ export function Admin() {
         body: JSON.stringify({ username, password })
       });
       
-      if (!loginRes.ok) {
-        const errorData = await loginRes.json();
-        throw new Error(errorData.error || 'Invalid credentials');
+      let resData;
+      try {
+        const text = await loginRes.text();
+        if (!text) {
+           throw new Error('Empty response');
+        }
+        resData = JSON.parse(text);
+      } catch (err) {
+        throw new Error('Login failed: Invalid server response');
       }
       
-      const { token } = await loginRes.json();
+      if (!loginRes.ok) {
+        throw new Error(resData.message || resData.error || 'Invalid credentials');
+      }
+      
+      const { token } = resData;
       localStorage.setItem('adminToken', token);
       setToken(token);
     } catch (err: any) {
@@ -148,8 +158,8 @@ export function Admin() {
   const statusOptions = ['New', 'Contacted', 'Scheduled', 'Completed', 'Closed'];
 
   const EditableRow = ({ item, type }: { item: any, type: 'readiness'|'consultation', key?: React.Key }) => {
-    const [notes, setNotes] = useState(item.adminNotes);
-    const [status, setStatus] = useState(item.status);
+    const [notes, setNotes] = useState(item.adminNotes || '');
+    const [status, setStatus] = useState(item.status || 'New');
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
@@ -158,7 +168,7 @@ export function Admin() {
       setIsSaving(false);
     };
 
-    const isChanged = notes !== item.adminNotes || status !== item.status;
+    const isChanged = notes !== (item.adminNotes || '') || status !== (item.status || 'New');
 
     return (
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col md:flex-row gap-6 mb-4">

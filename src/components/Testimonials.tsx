@@ -5,20 +5,17 @@ const TESTIMONIALS = [
   {
     text: "Mr. Nagesh patiently explained every option, arranged site visits, and negotiated the best offer. Couldn't have asked for a better advisor.",
     name: "Arjun & Priya",
-    type: "Happy Homebuyers, Bangalore",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80"
+    type: "Happy Homebuyers, Bangalore"
   },
   {
     text: "Very professional and transparent. He understood my investment goals and found a property with excellent rental yield potential.",
     name: "Rajesh Kumar",
-    type: "NRI Investor",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80"
+    type: "NRI Investor"
   },
   {
     text: "The end-to-end support was incredible. From the first site visit to the final paperwork, Aashirwad Realtors made it seamless.",
     name: "Sneha Reddy",
-    type: "First-Time Buyer",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80"
+    type: "First-Time Buyer"
   }
 ];
 
@@ -57,14 +54,9 @@ export function Testimonials() {
                   "{testimonial.text}"
                 </blockquote>
                 
-                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-12 h-12 bg-beige-100 rounded-full overflow-hidden border-2 border-gold-500 flex-shrink-0">
-                    <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gold-500 uppercase tracking-wider text-sm">{testimonial.name}</p>
-                    <p className="text-beige-200 text-xs">{testimonial.type}</p>
-                  </div>
+                <div className="mt-auto">
+                  <p className="font-bold text-gold-500 uppercase tracking-wider text-sm">{testimonial.name}</p>
+                  <p className="text-beige-200 text-xs">{testimonial.type}</p>
                 </div>
               </div>
             </div>

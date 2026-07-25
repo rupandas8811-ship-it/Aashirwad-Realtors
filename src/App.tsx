@@ -7,7 +7,7 @@ import { BuildersPage } from './pages/BuildersPage';
 import { ReadinessTestPage } from './pages/ReadinessTestPage';
 import { SubscriptionPage } from './pages/SubscriptionPage';
 import { ContactPage } from './pages/ContactPage';
-import { AdminDashboard } from './pages/AdminDashboard';
+import { Admin } from './components/Admin';
 
 export default function App() {
   return (
@@ -19,8 +19,8 @@ export default function App() {
         <Route path="readiness-test" element={<ReadinessTestPage />} />
         <Route path="subscription" element={<SubscriptionPage />} />
         <Route path="contact" element={<ContactPage />} />
-        <Route path="admin" element={<AdminDashboard />} />
       </Route>
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }

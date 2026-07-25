@@ -369,7 +369,7 @@ Here are my responses:
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+    <div className="w-full bg-white">
       <div className="max-w-3xl mx-auto px-4 py-8 md:py-16 min-h-screen flex flex-col">
         {step === 0 && (
           <div className="flex-1 flex flex-col justify-center animate-fade-in max-w-2xl mx-auto w-full">

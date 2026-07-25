@@ -1,7 +1,8 @@
 import React from 'react';
 import { ClipboardList, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-export function BuyerReadiness({ onTakeTest }: { onTakeTest: () => void }) {
+export function BuyerReadiness() {
   const assessmentItems = [
     "Your purpose of buying",
     "Budget",
@@ -33,13 +34,13 @@ export function BuyerReadiness({ onTakeTest }: { onTakeTest: () => void }) {
               Buying property requires careful planning. Before scheduling a consultation, complete our Buyer Readiness Assessment to help us understand your exact needs.
             </p>
             
-            <button 
-              onClick={onTakeTest}
-              className="bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold text-lg inline-flex items-center gap-2 transition-all shadow-lg transform hover:-translate-y-0.5"
+            <Link 
+              to="/readiness-test"
+              className="bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold text-lg inline-flex items-center gap-2 transition-all shadow-lg transform hover:-translate-y-0.5 w-max"
             >
               Take the Readiness Test
               <ArrowRight className="w-5 h-5" />
-            </button>
+            </Link>
             <p className="mt-4 text-sm text-gold-400 font-medium">Takes only 2 minutes. Receive personalized insights immediately.</p>
           </div>
 

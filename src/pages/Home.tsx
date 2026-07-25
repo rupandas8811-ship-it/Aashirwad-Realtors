@@ -1,5 +1,4 @@
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
 import { Hero } from '../components/Hero';
 import { About } from '../components/About';
 import { Stats } from '../components/Stats';
@@ -11,15 +10,13 @@ import { Subscription } from '../components/Subscription';
 import { Contact } from '../components/Contact';
 
 export function Home() {
-  const { setShowTest } = useOutletContext<{ setShowTest: (v: boolean) => void }>();
-
   return (
     <>
       <Hero />
       <About />
       <Stats />
       <Partners />
-      <BuyerReadiness onTakeTest={() => setShowTest(true)} />
+      <BuyerReadiness />
       <Consultation />
       <Testimonials />
       <Subscription />
