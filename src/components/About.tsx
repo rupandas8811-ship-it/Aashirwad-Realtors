@@ -50,13 +50,7 @@ export function About() {
                 className="w-full max-w-sm h-48 md:h-64 object-cover rounded-sm shadow-sm"
               />
             </div>
-            
-            <Link to="/contact" className="hidden inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
-              <span>Read Full Story</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </div>
-
         </div>
 
         {/* Why Choose Us Grid */}

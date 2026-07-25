@@ -56,12 +56,13 @@ export function Admin() {
       let resData;
       try {
         const text = await loginRes.text();
+        console.log("Login response text:", text);
         if (!text) {
            throw new Error('Empty response');
         }
         resData = JSON.parse(text);
-      } catch (err) {
-        throw new Error('Login failed: Invalid server response');
+      } catch (err: any) {
+        throw new Error(`Login failed: Invalid server response (${err.message})`);
       }
       
       if (!loginRes.ok) {
@@ -71,6 +72,7 @@ export function Admin() {
       const { token } = resData;
       localStorage.setItem('adminToken', token);
       setToken(token);
+      setIsAuthenticated(true);
     } catch (err: any) {
       setError(err.message);
     } finally {
