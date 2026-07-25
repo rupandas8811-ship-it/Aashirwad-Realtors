@@ -10,10 +10,12 @@ export function Consultation() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError('');
     
     try {
       const res = await fetch('/api/consultation', {
@@ -24,10 +26,12 @@ export function Consultation() {
       if (res.ok) {
         setIsSuccess(true);
         setFormData({ fullName: '', phone: '', email: '', lookingFor: 'First Home' });
+      } else {
+        throw new Error('Failed to submit consultation');
       }
     } catch (e) {
       console.error(e);
-      alert('Failed to schedule consultation. Please try again.');
+      setSubmitError('Failed to schedule consultation. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -76,6 +80,11 @@ export function Consultation() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {submitError && (
+                  <div className="p-4 bg-red-50 text-red-600 rounded-sm text-sm font-medium border border-red-100">
+                    {submitError}
+                  </div>
+                )}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Full Name</label>

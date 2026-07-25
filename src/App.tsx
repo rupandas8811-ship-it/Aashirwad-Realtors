@@ -7,6 +7,7 @@ import { BuildersPage } from './pages/BuildersPage';
 import { ReadinessTestPage } from './pages/ReadinessTestPage';
 import { SubscriptionPage } from './pages/SubscriptionPage';
 import { ContactPage } from './pages/ContactPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="readiness-test" element={<ReadinessTestPage />} />
         <Route path="subscription" element={<SubscriptionPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="admin" element={<AdminDashboard />} />
       </Route>
     </Routes>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { TRUST_REASONS } from '../types';
 
 export function About() {
@@ -50,10 +51,10 @@ export function About() {
               />
             </div>
             
-            <a href="/contact" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
+            <Link to="/contact" className="hidden inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
               <span>Read Full Story</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </div>
 
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Phone, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Hero() {
   return (
@@ -31,10 +32,10 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <a href="/contact" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-lg">
+            <Link to="/contact" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-lg">
               Schedule a Visit
               <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
             <a href="tel:+919742636365" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm px-8 py-4 rounded-sm font-bold transition-all shadow-sm">
               <Phone className="w-5 h-5 text-gold-500" />
               Call +91 9742636365

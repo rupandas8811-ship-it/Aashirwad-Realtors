@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { NAV_ITEMS } from '../types';
 
 export function Footer() {
@@ -31,10 +32,10 @@ export function Footer() {
             <ul className="space-y-4">
               {NAV_ITEMS.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} className="text-sm font-medium text-beige-200 hover:text-gold-500 transition-colors flex items-center gap-2">
+                  <Link to={item.href} className="text-sm font-medium text-beige-200 hover:text-gold-500 transition-colors flex items-center gap-2">
                     <span className="w-1 h-1 bg-gold-500 rounded-full" />
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -53,7 +54,7 @@ export function Footer() {
           <p className="text-xs text-beige-200 font-medium flex items-center gap-4">
             <span>© {new Date().getFullYear()} Aashirwad Realtors. All rights reserved.</span>
             <span className="hidden md:inline text-navy-800">|</span>
-            <a href="/admin" className="hover:text-gold-500 transition-colors">Staff Login</a>
+            <Link to="/admin" className="hover:text-gold-500 transition-colors">Staff Login</Link>
           </p>
           <p className="text-xs text-gold-500 font-bold tracking-widest uppercase">
             RERA: PRM/KA/RERA/1251/310/AG/220203/002771

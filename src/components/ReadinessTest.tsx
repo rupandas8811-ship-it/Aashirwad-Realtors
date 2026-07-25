@@ -36,9 +36,11 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
   const handlePrev = () => setStep(prev => prev - 1);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const calculateScore = async () => {
     setIsSubmitting(true);
+    setSubmitError('');
     let currentScore = 0;
 
     // Q1 (max 10)
@@ -101,7 +103,7 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
     else if (finalScore >= 40) cat = 'Nurture';
     
     try {
-      await fetch('/api/readiness', {
+      const res = await fetch('/api/readiness', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -111,12 +113,16 @@ export function ReadinessTest({ onClose }: ReadinessTestProps) {
           ...basicDetails
         })
       });
+      if (!res.ok) {
+        throw new Error('Failed to save readiness test');
+      }
+      setStep(11);
     } catch (e) {
       console.error("Failed to save readiness test", e);
+      setSubmitError("Failed to submit. Please try again.");
     }
 
     setIsSubmitting(false);
-    setStep(11);
   };
 
   const getResultCategory = () => {
@@ -154,7 +160,6 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">1. Why do you believe Bangalore is the right city for you to purchase property?</h3>
-            <p className="text-gray-500 italic">Tests whether you have a real reason to buy in Bangalore or are simply following market hype.</p>
             <div className="space-y-3 mt-4">
               {['I already live here.', 'My career depends on Bangalore.', 'Long-term investment.', 'Rental income.', "Children's future.", 'Family relocation.', 'I am still exploring.'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q1 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -172,20 +177,23 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">2. If you decide NOT to buy any property in Bangalore during the next two years, what would happen?</h3>
-            <p className="text-gray-500 italic">Measures pain. People buy because pain is stronger than comfort.</p>
-            <textarea 
-              value={answers.q2}
-              onChange={e => setAnswers({...answers, q2: e.target.value})}
-              placeholder="E.g. Nothing, my rent keeps increasing, I may lose an investment opportunity..."
-              className="w-full h-40 p-4 border border-gray-200 rounded-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none resize-none"
-            />
+            <div className="space-y-3 mt-4">
+              {['I may lose an investment opportunity.', 'My rent keeps increasing.', 'My business requires permanent settlement.', 'I want to secure a home for my family.'].map(opt => (
+                <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q2 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
+                  <input type="radio" name="q2" value={opt} checked={answers.q2 === opt} onChange={e => setAnswers({...answers, q2: e.target.value})} className="hidden" />
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${answers.q2 === opt ? 'border-gold-500' : 'border-gray-400'}`}>
+                    {answers.q2 === opt && <div className="w-2.5 h-2.5 bg-gold-500 rounded-full" />}
+                  </div>
+                  <span className="font-medium text-navy-900">{opt}</span>
+                </label>
+              ))}
+            </div>
           </div>
         );
       case 3:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">3. What is stopping you from purchasing today?</h3>
-            <p className="text-gray-500 italic">Select all that apply. Identifies real objections.</p>
             <div className="grid sm:grid-cols-2 gap-3 mt-4">
               {['Budget', 'Loan eligibility', 'Family approval', 'Location confusion', 'Builder trust', 'Waiting for prices to reduce', 'Market uncertainty', 'Job uncertainty', 'Still comparing options', 'Other'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q3.includes(opt) ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -206,7 +214,6 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">4. Suppose you find the perfect property tomorrow. Will you be financially ready?</h3>
-            <p className="text-gray-500 italic">Measures purchasing capability.</p>
             <div className="space-y-3 mt-4">
               {['I can book immediately.', 'Within 30 days.', 'Within 90 days.', 'Within 6 months.', 'More than 6 months.', 'Just exploring.'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q4 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -224,7 +231,6 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">5. Which statement describes you best?</h3>
-            <p className="text-gray-500 italic">Segments customers automatically.</p>
             <div className="grid sm:grid-cols-2 gap-3 mt-4">
               {['I am buying my first home.', 'Upgrading my current home.', 'Investment.', 'Rental income.', 'Retirement planning.', 'Villa aspiration.', 'Luxury lifestyle.', 'Commercial diversification.'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q5 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -242,20 +248,23 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">6. Mr. Nagesh believes many people buy emotionally and regret later. Why do YOU think buying now is a smarter decision than waiting?</h3>
-            <p className="text-gray-500 italic">This question reveals conviction. People with no conviction rarely convert.</p>
-            <textarea 
-              value={answers.q6}
-              onChange={e => setAnswers({...answers, q6: e.target.value})}
-              placeholder="Your answer..."
-              className="w-full h-40 p-4 border border-gray-200 rounded-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none resize-none"
-            />
+            <div className="space-y-3 mt-4">
+              {['Property prices may increase, so buying now could be financially smarter than waiting.', 'I am financially prepared and have found the right time to make the purchase.', 'My family or lifestyle needs make owning a property important for me now.', "I see a good long-term investment opportunity and don't want to miss it."].map(opt => (
+                <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q6 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
+                  <input type="radio" name="q6" value={opt} checked={answers.q6 === opt} onChange={e => setAnswers({...answers, q6: e.target.value})} className="hidden" />
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${answers.q6 === opt ? 'border-gold-500' : 'border-gray-400'}`}>
+                    {answers.q6 === opt && <div className="w-2.5 h-2.5 bg-gold-500 rounded-full" />}
+                  </div>
+                  <span className="font-medium text-navy-900">{opt}</span>
+                </label>
+              ))}
+            </div>
           </div>
         );
       case 7:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">7. Imagine Bangalore property prices remain unchanged for three years. Would you still purchase?</h3>
-            <p className="text-gray-500 italic">Separates investors from genuine homebuyers.</p>
             <div className="flex gap-4 mt-4 mb-6">
               {['Yes', 'No', 'Not sure'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors flex-1 ${answers.q7_radio === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -284,7 +293,6 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">8. Which statement best describes your current financial planning?</h3>
-            <p className="text-gray-500 italic">Measures financial maturity.</p>
             <div className="space-y-3 mt-4">
               {['I already have the booking amount ready.', 'I know my loan eligibility.', 'I have spoken with banks.', 'I am arranging finances.', "I haven't started financial planning."].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q8 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -302,7 +310,6 @@ Here are my responses:
         return (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">9. If Mr. Nagesh recommends a property that is BELOW your planned budget because he believes it is a better investment, what would you do?</h3>
-            <p className="text-gray-500 italic">Measures trust and advisory mindset.</p>
             <div className="space-y-3 mt-4">
               {['Trust his recommendation.', 'Evaluate with him.', 'Stick only to my original plan.', 'Depends on explanation.'].map(opt => (
                 <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q9 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
@@ -321,19 +328,37 @@ Here are my responses:
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-2xl font-bold text-navy-900">10. The Devil's Advocate Question</h3>
             <p className="text-gray-500 italic">Mr. Nagesh's philosophy is simple: "Sometimes the best advice is NOT to buy." Before he spends his time helping you—convince him. Why should he believe that YOU are genuinely serious about purchasing property within your mentioned timeline?</p>
-            <div className="bg-beige-50 p-4 border-l-4 border-gold-500 mb-4">
-              <p className="text-sm text-navy-900 font-medium">This single answer often predicts conversion. Serious buyers write paragraphs. Casual browsers write one sentence.</p>
+            <div className="space-y-3 mt-4">
+              {['My budget and finances are ready, and I will purchase once I find the right property.', 'I have a clear buying timeline and am actively evaluating suitable properties.', 'My family/business requirement is genuine, and I need to finalize a property within my planned timeline.', 'I am ready to take the next step, including property visits and financial discussions, if the right opportunity is available.'].map(opt => (
+                <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${answers.q10 === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
+                  <input type="radio" name="q10" value={opt} checked={answers.q10 === opt} onChange={e => setAnswers({...answers, q10: e.target.value})} className="hidden" />
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${answers.q10 === opt ? 'border-gold-500' : 'border-gray-400'}`}>
+                    {answers.q10 === opt && <div className="w-2.5 h-2.5 bg-gold-500 rounded-full" />}
+                  </div>
+                  <span className="font-medium text-navy-900">{opt}</span>
+                </label>
+              ))}
             </div>
-            <textarea 
-              value={answers.q10}
-              onChange={e => setAnswers({...answers, q10: e.target.value})}
-              placeholder="Your honest answer..."
-              className="w-full h-48 p-4 border border-gray-200 rounded-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none resize-none"
-            />
           </div>
         );
       default:
         return null;
+    }
+  };
+
+  const isCurrentStepAnswered = () => {
+    switch (step) {
+      case 1: return answers.q1 !== '';
+      case 2: return answers.q2 !== '';
+      case 3: return answers.q3.length > 0;
+      case 4: return answers.q4 !== '';
+      case 5: return answers.q5 !== '';
+      case 6: return answers.q6 !== '';
+      case 7: return answers.q7_radio !== '' && answers.q7_text.trim() !== '';
+      case 8: return answers.q8 !== '';
+      case 9: return answers.q9 !== '';
+      case 10: return answers.q10 !== '';
+      default: return true;
     }
   };
 
@@ -412,48 +437,41 @@ Here are my responses:
               {step < 10 ? (
                 <button 
                   onClick={handleNext}
-                  className="bg-gold-500 hover:bg-gold-600 text-navy-900 px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors"
+                  disabled={!isCurrentStepAnswered()}
+                  className={`px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors ${!isCurrentStepAnswered() ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gold-500 hover:bg-gold-600 text-navy-900'}`}
                 >
                   Next <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
                 <button 
                   onClick={calculateScore}
-                  disabled={isSubmitting}
-                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors shadow-lg disabled:opacity-75"
+                  disabled={isSubmitting || !isCurrentStepAnswered()}
+                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3 rounded-sm font-bold flex items-center gap-2 transition-colors shadow-lg disabled:opacity-75 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Calculating...' : 'See My Result'} <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </div>
+            {submitError && (
+              <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-sm text-sm font-medium text-center border border-red-100">
+                {submitError}
+              </div>
+            )}
           </div>
         )}
 
         {step === 11 && (
           <div className="flex-1 flex flex-col justify-center items-center text-center animate-fade-in py-12">
             <div className="w-24 h-24 bg-beige-50 rounded-full flex items-center justify-center mb-8 border-4 border-gold-500">
-              <span className="text-3xl font-extrabold text-navy-900">{score}</span>
+              <CheckCircle2 className="w-12 h-12 text-gold-500" />
             </div>
-            <h2 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-2">Your Readiness Score</h2>
-            <h1 className="text-4xl font-bold text-navy-900 mb-4">{getResultCategory().cat}</h1>
-            <p className="text-xl text-gray-600 mb-10 max-w-lg">
-              Recommended Next Step: <strong className="text-navy-900">{getResultCategory().action}</strong>
-            </p>
-            
-            <div className="space-y-4 w-full max-w-sm">
-              <button 
-                onClick={sendToWhatsApp}
-                className="w-full bg-[#25D366] hover:bg-[#1ebd59] text-white px-8 py-4 rounded-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-lg"
-              >
-                Send Results via WhatsApp
-              </button>
-              <button 
-                onClick={onClose}
-                className="w-full bg-white border border-gray-200 text-navy-900 px-8 py-4 rounded-sm font-bold hover:bg-gray-50 transition-colors"
-              >
-                Back to Website
-              </button>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-navy-900 mb-10">Your test was submitted successfully.</h1>
+            <button 
+              onClick={onClose}
+              className="w-full max-w-sm bg-navy-900 text-white px-8 py-4 rounded-sm font-bold hover:bg-navy-800 transition-colors"
+            >
+              Back to Website
+            </button>
           </div>
         )}
       </div>

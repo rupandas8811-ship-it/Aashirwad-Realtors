@@ -17,6 +17,21 @@ async function startServer() {
   
   app.use(express.json());
 
+  // Ensure default admin user exists
+  try {
+    const existingStaff = await db.select().from(staff).limit(1);
+    if (existingStaff.length === 0) {
+      const passwordHash = await bcrypt.hash('admin123', 10);
+      await db.insert(staff).values({
+        username: 'admin',
+        passwordHash
+      });
+      console.log('Created default admin user (admin / admin123)');
+    }
+  } catch (err) {
+    console.error("Failed to verify/create admin user", err);
+  }
+
   // Readiness Test Submission
   app.post('/api/readiness', async (req, res) => {
     try {

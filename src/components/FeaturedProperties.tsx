@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapPin, Bed, Bath, Square, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const PROPERTIES = [
   {
@@ -55,10 +56,10 @@ export function FeaturedProperties() {
               Featured Properties
             </h2>
           </div>
-          <a href="/contact" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
+          <Link to="/contact" className="inline-flex items-center gap-2 text-navy-900 font-bold hover:text-gold-600 transition-colors group">
             <span>View All Properties</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </a>
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
