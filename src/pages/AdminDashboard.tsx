@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LogIn, Users, Calendar, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export function AdminDashboard() {
   const [token, setToken] = useState(localStorage.getItem('adminToken') || '');
@@ -23,24 +24,21 @@ export function AdminDashboard() {
     setIsLoggingIn(true);
     setLoginError('');
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+      const { data, error } = await supabase.rpc('admin_login', { 
+        p_username: username, 
+        p_password: password 
       });
-      
-      let data;
-      try {
-        data = await res.json();
-      } catch (err) {
+
+      if (error) {
+        console.error("Supabase RPC error:", error);
         throw new Error('Unable to login. Please try again.');
       }
-      
-      if (res.ok && data.success) {
+
+      if (data && data.success) {
         setToken(data.token);
         localStorage.setItem('adminToken', data.token);
       } else {
-        setLoginError(data.message || 'Invalid mobile number or password.');
+        setLoginError(data?.message || 'Invalid mobile number or password.');
       }
     } catch (e: any) {
       setLoginError(e.message || 'Unable to login. Please try again.');
@@ -57,18 +55,21 @@ export function AdminDashboard() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/submissions', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const { data, error } = await supabase.rpc('get_admin_submissions', {
+        p_token: token
       });
-      if (res.ok) {
-        const jsonData = await res.json();
-        setData(jsonData);
-      } else {
-        if (res.status === 401) {
+
+      if (error) {
+        if (error.message.includes('Unauthorized')) {
           handleLogout();
+        } else {
+          console.error("Submissions RPC error:", error);
         }
+        return;
+      }
+
+      if (data) {
+        setData(data);
       }
     } catch (e) {
       console.error(e);

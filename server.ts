@@ -78,11 +78,15 @@ async function startServer() {
   app.post('/api/admin/login', async (req, res) => {
     try {
       res.setHeader('Content-Type', 'application/json');
-      const { username, password } = req.body;
+      const { username, password } = req.body || {};
+      
+      if (!username || !password) {
+        return res.status(401).json({ success: false, message: "Invalid mobile number or password" });
+      }
       
       const adminUser = await db.select().from(staff).where(eq(staff.username, username)).limit(1);
       
-      if (adminUser.length === 0) {
+      if (!adminUser || adminUser.length === 0) {
         return res.status(401).json({ success: false, message: "Invalid mobile number or password" });
       }
 
@@ -97,7 +101,7 @@ async function startServer() {
 
       return res.json({ success: true, user: { id: adminUser[0].id, username: adminUser[0].username }, token });
     } catch (e: any) {
-      console.error(e);
+      console.error("Login endpoint error:", e);
       return res.status(500).json({ success: false, message: "Unable to login. Please try again." });
     }
   });
