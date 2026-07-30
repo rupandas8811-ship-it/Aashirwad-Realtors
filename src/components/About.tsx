@@ -10,11 +10,11 @@ export function About() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           
           <div className="relative">
-            <div className="aspect-[4/5] rounded-sm overflow-hidden shadow-md">
+            <div className="aspect-[4/5] rounded-sm overflow-hidden shadow-md bg-navy-900/5 flex items-center justify-center">
               <img 
                 src="https://wqhbuwisqncwadomxwuf.supabase.co/storage/v1/object/public/tmg/WhatsApp%20Image%202026-07-23%20at%2012.03.54%20PM%20(1).jpeg" 
                 alt="D. M. Nagesh" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain sm:object-cover"
               />
             </div>
             <div className="absolute -bottom-6 -right-2 sm:-bottom-8 sm:-right-8 bg-navy-900 text-white p-5 sm:p-8 rounded-sm shadow-xl hidden sm:block">
@@ -43,11 +43,11 @@ export function About() {
               </p>
             </div>
             
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-6 sm:mb-8 flex justify-center sm:justify-start">
               <img 
                 src="https://wqhbuwisqncwadomxwuf.supabase.co/storage/v1/object/public/tmg/WhatsApp%20Image%202026-07-23%20at%2012.03.54%20PM.jpeg" 
                 alt="D. M. Nagesh with client" 
-                className="w-full max-w-sm h-48 sm:h-64 object-cover rounded-sm shadow-sm"
+                className="w-full max-w-sm h-auto sm:h-64 object-contain sm:object-cover rounded-sm shadow-sm"
               />
             </div>
           </div>
