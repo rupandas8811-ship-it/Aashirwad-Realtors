@@ -8,9 +8,9 @@ export function Layout() {
   const isHome = location.pathname === '/';
 
   return (
-    <div className="min-h-screen bg-white font-sans text-navy-900 scroll-smooth flex flex-col">
+    <div className="min-h-screen bg-white font-sans text-navy-900 scroll-smooth flex flex-col w-full overflow-x-hidden">
       <Header />
-      <main className={`flex-grow ${!isHome ? 'pt-24' : ''}`}>
+      <main className={`flex-grow w-full ${!isHome ? 'pt-24' : ''}`}>
         <Outlet />
       </main>
       <Footer />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Shield, LogOut, Loader2, Save, XCircle } from 'lucide-react';
+import { Shield, LogOut, Loader2, Save, XCircle, Search, Calendar, Filter, RotateCcw, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import bcrypt from 'bcryptjs';
 
@@ -14,6 +14,13 @@ export function Admin() {
   const [readiness, setReadiness] = useState<any[]>([]);
   const [consults, setConsults] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'readiness'|'consults'>('readiness');
+
+  // Filter States
+  const [searchName, setSearchName] = useState('');
+  const [searchPhone, setSearchPhone] = useState('');
+  const [buyerTypeFilter, setBuyerTypeFilter] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -111,6 +118,122 @@ export function Admin() {
     }
   };
 
+  // Filter Logic
+  const filterItems = (items: any[]) => {
+    return items.filter(item => {
+      // Name Search
+      if (searchName.trim()) {
+        const name = (item.fullName || item.full_name || '').toLowerCase();
+        if (!name.includes(searchName.trim().toLowerCase())) return false;
+      }
+
+      // Phone Search
+      if (searchPhone.trim()) {
+        const phone = (item.phone || '').toLowerCase();
+        if (!phone.includes(searchPhone.trim().toLowerCase())) return false;
+      }
+
+      // Buyer Type Filter
+      if (buyerTypeFilter) {
+        const itemType = (item.category || item.buyerType || item.lookingFor || '').toLowerCase();
+        if (!itemType.includes(buyerTypeFilter.toLowerCase())) return false;
+      }
+
+      // From Date
+      if (fromDate) {
+        const itemDate = new Date(item.createdAt || item.created_at);
+        const start = new Date(fromDate);
+        start.setHours(0, 0, 0, 0);
+        if (isNaN(itemDate.getTime()) || itemDate < start) return false;
+      }
+
+      // To Date
+      if (toDate) {
+        const itemDate = new Date(item.createdAt || item.created_at);
+        const end = new Date(toDate);
+        end.setHours(23, 59, 59, 999);
+        if (isNaN(itemDate.getTime()) || itemDate > end) return false;
+      }
+
+      return true;
+    });
+  };
+
+  const filteredReadiness = filterItems(readiness);
+  const filteredConsults = filterItems(consults);
+
+  const handleClearFilters = () => {
+    setSearchName('');
+    setSearchPhone('');
+    setBuyerTypeFilter('');
+    setFromDate('');
+    setToDate('');
+  };
+
+  // Download Report
+  const handleDownloadReport = () => {
+    const currentList = activeTab === 'readiness' ? filteredReadiness : filteredConsults;
+    
+    if (currentList.length === 0) {
+      alert('No data available to export based on current filters.');
+      return;
+    }
+
+    const headers = [
+      'Name',
+      'Phone Number',
+      'Email',
+      'Buyer Type',
+      'Readiness Test Score/Marks',
+      'Created Date'
+    ];
+
+    const rows = currentList.map(item => {
+      const name = item.fullName || item.full_name || 'N/A';
+      const phone = item.phone || 'N/A';
+      const email = item.email || 'N/A';
+      const buyerType = item.category || item.buyerType || item.lookingFor || 'N/A';
+      const score = item.score !== undefined && item.score !== null ? item.score : (item.marks || 'N/A');
+      const createdDate = item.createdAt ? format(new Date(item.createdAt), 'yyyy-MM-dd HH:mm:ss') : 'N/A';
+
+      return [name, phone, email, buyerType, score, createdDate];
+    });
+
+    const escapeCsv = (val: any) => {
+      const str = String(val ?? '');
+      return `"${str.replace(/"/g, '""')}"`;
+    };
+
+    const csvRows = [
+      headers.map(escapeCsv).join(','),
+      ...rows.map(row => row.map(escapeCsv).join(','))
+    ];
+
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeTab}_report_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const uniqueBuyerTypes = Array.from(new Set([
+    'Platinum Buyer',
+    'Hot Buyer',
+    'Warm Buyer',
+    'Cold Buyer',
+    'Nurture',
+    'Awareness',
+    ...readiness.map(r => r.category).filter(Boolean),
+    ...consults.map(c => c.lookingFor || c.category).filter(Boolean)
+  ]));
+
+  const hasActiveFilters = Boolean(searchName || searchPhone || buyerTypeFilter || fromDate || toDate);
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -174,31 +297,31 @@ export function Admin() {
     const isChanged = notes !== (item.adminNotes || '') || status !== (item.status || 'New');
 
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col md:flex-row gap-6 mb-4">
-        <div className="flex-1 space-y-4">
-          <div className="flex justify-between items-start">
-            <div>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-100 flex flex-col md:flex-row gap-4 sm:gap-6 mb-4 overflow-hidden">
+        <div className="flex-1 space-y-4 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+            <div className="min-w-0">
               {type === 'consultation' ? (
                 <>
-                  <h3 className="text-lg font-bold text-navy-900">{item.fullName}</h3>
-                  <p className="text-gray-600 text-sm">{item.email} | {item.phone}</p>
+                  <h3 className="text-base sm:text-lg font-bold text-navy-900 break-words">{item.fullName}</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm break-all">{item.email} | {item.phone}</p>
                 </>
               ) : (
                 <>
-                  <h3 className="text-lg font-bold text-navy-900">Score: {item.score}/100</h3>
-                  <p className="text-sm font-medium text-gold-600 uppercase tracking-widest">{item.category}</p>
+                  <h3 className="text-base sm:text-lg font-bold text-navy-900">Score: {item.score}/100</h3>
+                  <p className="text-xs sm:text-sm font-medium text-gold-600 uppercase tracking-widest">{item.category}</p>
                   {item.fullName && (
-                    <p className="text-gray-600 text-sm mt-1">{item.fullName} | {item.email} | {item.phone} | {item.city}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1 break-words">{item.fullName} | <span className="break-all">{item.email}</span> | {item.phone} | {item.city}</p>
                   )}
                 </>
               )}
             </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-400">Created: {format(new Date(item.createdAt), 'PP p')}</p>
-              <p className="text-xs text-gray-400">Updated: {format(new Date(item.updatedAt), 'PP p')}</p>
+            <div className="sm:text-right">
+              <p className="text-[11px] sm:text-xs text-gray-400">Created: {format(new Date(item.createdAt), 'PP p')}</p>
+              <p className="text-[11px] sm:text-xs text-gray-400">Updated: {format(new Date(item.updatedAt), 'PP p')}</p>
             </div>
           </div>
-          <div className="bg-gray-50 p-4 rounded text-sm">
+          <div className="bg-gray-50 p-3 sm:p-4 rounded text-xs sm:text-sm overflow-x-auto">
             {type === 'consultation' ? (
               <div>
                 <strong>Looking for:</strong> {item.lookingFor}
@@ -219,13 +342,13 @@ export function Admin() {
             )}
           </div>
         </div>
-        <div className="w-full md:w-72 bg-gray-50 p-4 rounded flex flex-col gap-4">
+        <div className="w-full md:w-72 bg-gray-50 p-3.5 sm:p-4 rounded flex flex-col gap-3 sm:gap-4">
           <div>
             <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1">Status</label>
             <select
               value={status}
               onChange={e => setStatus(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none"
+              className="w-full p-2.5 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none bg-white min-h-[44px]"
             >
               {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -236,14 +359,14 @@ export function Admin() {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Add private notes here..."
-              className="w-full flex-1 p-2 border border-gray-300 rounded text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none resize-none min-h-[100px]"
+              className="w-full flex-1 p-2.5 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none resize-none min-h-[90px] bg-white"
             />
           </div>
           {isChanged && (
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-navy-900 text-white font-medium py-2 rounded text-sm flex items-center justify-center gap-2 hover:bg-navy-800 transition-colors"
+              className="bg-navy-900 text-white font-medium py-2.5 rounded text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-navy-800 transition-colors min-h-[44px]"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Changes
@@ -256,49 +379,152 @@ export function Admin() {
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans text-navy-900 flex flex-col">
-      <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-navy-900 rounded flex items-center justify-center">
-            <Shield className="w-5 h-5 text-gold-500" />
+      <header className="bg-white shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-navy-900 rounded flex items-center justify-center flex-shrink-0">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-gold-500" />
           </div>
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-base sm:text-xl font-bold truncate">Admin Dashboard</h1>
         </div>
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-2 text-gray-500 hover:text-red-500 font-medium transition-colors"
+          className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 hover:text-red-500 font-medium transition-colors px-2 py-1.5 rounded min-h-[44px]"
         >
-          <LogOut className="w-4 h-4" /> Sign Out
+          <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Sign Out</span><span className="sm:hidden">Exit</span>
         </button>
       </header>
       
-      <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
-        <div className="flex gap-4 mb-6 border-b border-gray-200">
+      <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full">
+        {/* Filter Card */}
+        <div className="bg-white p-4 sm:p-5 rounded-lg shadow-sm border border-gray-200 mb-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-gold-600" />
+              <h2 className="font-bold text-navy-900 text-xs sm:text-sm uppercase tracking-wider">Filter Submissions</h2>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              {hasActiveFilters && (
+                <button
+                  onClick={handleClearFilters}
+                  className="text-xs font-semibold text-gray-500 hover:text-red-600 flex items-center gap-1 px-3 py-1.5 rounded border border-gray-200 hover:border-red-200 transition-colors min-h-[38px]"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Clear Filters
+                </button>
+              )}
+              
+              <button
+                onClick={handleDownloadReport}
+                className="bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold px-4 py-2 rounded text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors min-h-[38px]"
+              >
+                <Download className="w-4 h-4" /> Download Report (.csv)
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Search Name */}
+            <div>
+              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">Search Name</label>
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchName}
+                  onChange={e => setSearchName(e.target.value)}
+                  placeholder="e.g. Rahul"
+                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Search Phone */}
+            <div>
+              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">Search Phone</label>
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchPhone}
+                  onChange={e => setSearchPhone(e.target.value)}
+                  placeholder="e.g. 98765"
+                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Buyer Type Filter */}
+            <div>
+              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">Buyer Type</label>
+              <select
+                value={buyerTypeFilter}
+                onChange={e => setBuyerTypeFilter(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none bg-white min-h-[38px]"
+              >
+                <option value="">All Buyer Types</option>
+                {uniqueBuyerTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* From Date */}
+            <div>
+              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">From Date</label>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={e => setFromDate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none bg-white min-h-[38px]"
+              />
+            </div>
+
+            {/* To Date */}
+            <div>
+              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">To Date</label>
+              <input
+                type="date"
+                value={toDate}
+                onChange={e => setToDate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-xs sm:text-sm focus:border-navy-900 focus:ring-1 focus:ring-navy-900 outline-none bg-white min-h-[38px]"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 sm:gap-4 mb-6 border-b border-gray-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab('readiness')}
-            className={`px-4 py-3 font-bold text-sm uppercase tracking-wider transition-colors ${activeTab === 'readiness' ? 'text-navy-900 border-b-2 border-navy-900' : 'text-gray-400 hover:text-navy-900'}`}
+            className={`px-3 sm:px-4 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider transition-colors whitespace-nowrap min-h-[44px] ${activeTab === 'readiness' ? 'text-navy-900 border-b-2 border-navy-900' : 'text-gray-400 hover:text-navy-900'}`}
           >
-            Readiness Tests ({readiness.length})
+            Readiness Tests ({filteredReadiness.length} / {readiness.length})
           </button>
           <button
             onClick={() => setActiveTab('consults')}
-            className={`px-4 py-3 font-bold text-sm uppercase tracking-wider transition-colors ${activeTab === 'consults' ? 'text-navy-900 border-b-2 border-navy-900' : 'text-gray-400 hover:text-navy-900'}`}
+            className={`px-3 sm:px-4 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider transition-colors whitespace-nowrap min-h-[44px] ${activeTab === 'consults' ? 'text-navy-900 border-b-2 border-navy-900' : 'text-gray-400 hover:text-navy-900'}`}
           >
-            Consultations ({consults.length})
+            Consultations ({filteredConsults.length} / {consults.length})
           </button>
         </div>
 
+        {/* Submissions List */}
         <div className="space-y-4">
           {activeTab === 'readiness' ? (
-            readiness.length === 0 ? (
-              <p className="text-gray-500 text-center py-12">No readiness tests submitted yet.</p>
+            filteredReadiness.length === 0 ? (
+              <p className="text-gray-500 text-center py-12 bg-white rounded border border-gray-200">
+                {hasActiveFilters ? 'No readiness tests match the selected filters.' : 'No readiness tests submitted yet.'}
+              </p>
             ) : (
-              readiness.map(r => <EditableRow key={r.id} item={r} type="readiness" />)
+              filteredReadiness.map(r => <EditableRow key={r.id} item={r} type="readiness" />)
             )
           ) : (
-            consults.length === 0 ? (
-              <p className="text-gray-500 text-center py-12">No consultations submitted yet.</p>
+            filteredConsults.length === 0 ? (
+              <p className="text-gray-500 text-center py-12 bg-white rounded border border-gray-200">
+                {hasActiveFilters ? 'No consultations match the selected filters.' : 'No consultations submitted yet.'}
+              </p>
             ) : (
-              consults.map(c => <EditableRow key={c.id} item={c} type="consultation" />)
+              filteredConsults.map(c => <EditableRow key={c.id} item={c} type="consultation" />)
             )
           )}
         </div>

@@ -270,15 +270,15 @@ Here are my responses:
       case 7:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-2xl font-bold text-navy-900">7. Imagine Bangalore property prices remain unchanged for three years. Would you still purchase?</h3>
-            <div className="flex gap-4 mt-4 mb-6">
+            <h3 className="text-xl sm:text-2xl font-bold text-navy-900">7. Imagine Bangalore property prices remain unchanged for three years. Would you still purchase?</h3>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 mb-6">
               {['Yes', 'No', 'Not sure'].map(opt => (
-                <label key={opt} className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors flex-1 ${answers.q7_radio === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
+                <label key={opt} className={`flex items-center gap-3 p-3.5 sm:p-4 border rounded-sm cursor-pointer transition-colors flex-1 min-h-[44px] ${answers.q7_radio === opt ? 'border-gold-500 bg-beige-50' : 'border-gray-200 hover:border-navy-900'}`}>
                   <input type="radio" name="q7_radio" value={opt} checked={answers.q7_radio === opt} onChange={e => setAnswers({...answers, q7_radio: e.target.value})} className="hidden" />
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${answers.q7_radio === opt ? 'border-gold-500' : 'border-gray-400'}`}>
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${answers.q7_radio === opt ? 'border-gold-500' : 'border-gray-400'}`}>
                     {answers.q7_radio === opt && <div className="w-2.5 h-2.5 bg-gold-500 rounded-full" />}
                   </div>
-                  <span className="font-medium text-navy-900">{opt}</span>
+                  <span className="font-medium text-navy-900 text-sm sm:text-base">{opt}</span>
                 </label>
               ))}
             </div>
@@ -397,17 +397,17 @@ Here are my responses:
                 <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                 <input required type="text" value={basicDetails.city} onChange={e => setBasicDetails({...basicDetails, city: e.target.value})} className="w-full p-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-navy-900 outline-none" />
               </div>
-              <div className="pt-4 flex gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button 
                   type="submit"
-                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-4 rounded-sm font-bold flex items-center justify-center gap-2 transition-colors flex-1"
+                  className="bg-navy-900 hover:bg-navy-800 text-white px-8 py-3.5 sm:py-4 rounded-sm font-bold flex items-center justify-center gap-2 transition-colors min-h-[44px]"
                 >
                   Begin Assessment <ArrowRight className="w-5 h-5" />
                 </button>
                 <button 
                   type="button"
                   onClick={onClose}
-                  className="px-8 py-4 text-navy-900 font-bold hover:bg-gray-50 rounded-sm transition-colors"
+                  className="px-8 py-3.5 sm:py-4 text-navy-900 font-bold hover:bg-gray-50 border border-gray-200 sm:border-transparent rounded-sm transition-colors min-h-[44px] text-center"
                 >
                   Cancel
                 </button>
@@ -467,14 +467,19 @@ Here are my responses:
         )}
 
         {step === 11 && (
-          <div className="flex-1 flex flex-col justify-center items-center text-center animate-fade-in py-12">
-            <div className="w-24 h-24 bg-beige-50 rounded-full flex items-center justify-center mb-8 border-4 border-gold-500">
-              <CheckCircle2 className="w-12 h-12 text-gold-500" />
+          <div className="flex-1 flex flex-col justify-center items-center text-center animate-fade-in py-12 px-4">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-beige-50 rounded-full flex items-center justify-center mb-6 sm:mb-8 border-4 border-gold-500 shadow-md">
+              <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-gold-500" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-navy-900 mb-10">Your test was submitted successfully.</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy-900 mb-4 max-w-xl leading-tight">
+              🎉 Thank you for submitting your Readiness Test!
+            </h1>
+            <p className="text-base sm:text-lg text-gray-600 font-medium mb-8 max-w-lg">
+              Our consultant will contact you within 24 hours.
+            </p>
             <button 
               onClick={onClose}
-              className="w-full max-w-sm bg-navy-900 text-white px-8 py-4 rounded-sm font-bold hover:bg-navy-800 transition-colors"
+              className="w-full max-w-sm bg-navy-900 text-white px-8 py-3.5 sm:py-4 rounded-sm font-bold hover:bg-navy-800 transition-colors shadow-lg min-h-[44px]"
             >
               Back to Website
             </button>

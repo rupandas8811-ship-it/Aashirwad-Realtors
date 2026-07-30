@@ -69,89 +69,89 @@ export function Consultation() {
   ];
 
   return (
-    <section id="consultation" className="py-24 bg-white relative">
+    <section id="consultation" className="py-16 sm:py-24 bg-white relative">
       <div className="absolute top-0 left-0 w-full h-1/2 bg-beige-50 -z-10" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="flex items-center justify-center gap-2 text-gold-600 font-bold tracking-widest uppercase text-sm mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+          <div className="flex items-center justify-center gap-2 text-gold-600 font-bold tracking-widest uppercase text-xs sm:text-sm mb-3 sm:mb-4">
             <span className="w-8 h-0.5 bg-gold-600"></span>
             Book Appointment
             <span className="w-8 h-0.5 bg-gold-600"></span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-navy-900 mb-6 leading-tight">Interested in a Property? <br/>Schedule a Site Visit Today.</h2>
-          <p className="text-lg text-gray-600 font-light">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-navy-900 mb-4 sm:mb-6 leading-tight">Interested in a Property? <br className="hidden sm:block"/>Schedule a Site Visit Today.</h2>
+          <p className="text-base sm:text-lg text-gray-600 font-light">
             Every buyer has different priorities. Receive personalized property recommendations based on your goals.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-0 bg-white rounded-sm overflow-hidden shadow-2xl border border-gray-100">
           
-          <div className="lg:col-span-3 p-8 md:p-12">
-            <h3 className="text-2xl font-bold text-navy-900 mb-8 flex items-center gap-3">
-              <div className="w-10 h-10 bg-beige-50 rounded-full flex items-center justify-center">
+          <div className="lg:col-span-3 p-5 sm:p-8 md:p-12">
+            <h3 className="text-xl sm:text-2xl font-bold text-navy-900 mb-6 sm:mb-8 flex items-center gap-3">
+              <div className="w-10 h-10 bg-beige-50 rounded-full flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-5 h-5 text-gold-600" />
               </div>
-              Book Your Free Consultation
+              <span>Book Your Free Consultation</span>
             </h3>
             
             {isSuccess ? (
-              <div className="bg-beige-50 border-l-4 border-gold-500 p-8 text-center h-full flex flex-col justify-center">
-                <CheckCircle className="w-16 h-16 text-gold-500 mx-auto mb-4" />
-                <h4 className="text-2xl font-bold text-navy-900 mb-2">Request Received!</h4>
-                <p className="text-gray-600">Mr. Nagesh's team will contact you shortly to schedule your personalized consultation.</p>
-                <button onClick={() => setIsSuccess(false)} className="mt-8 text-gold-600 font-bold hover:text-gold-700">Book another</button>
+              <div className="bg-beige-50 border-l-4 border-gold-500 p-6 sm:p-8 text-center h-full flex flex-col justify-center">
+                <CheckCircle className="w-12 sm:w-16 h-12 sm:h-16 text-gold-500 mx-auto mb-4" />
+                <h4 className="text-xl sm:text-2xl font-bold text-navy-900 mb-2">Request Received!</h4>
+                <p className="text-sm sm:text-base text-gray-600">Mr. Nagesh's team will contact you shortly to schedule your personalized consultation.</p>
+                <button onClick={() => setIsSuccess(false)} className="mt-6 sm:mt-8 text-gold-600 font-bold hover:text-gold-700 text-sm sm:text-base">Book another</button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                 {submitError && (
                   <div className="p-4 bg-red-50 text-red-600 rounded-sm text-sm font-medium border border-red-100">
                     {submitError}
                   </div>
                 )}
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Full Name</label>
+                    <label className="block text-xs sm:text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Full Name</label>
                     <input 
                       required type="text" 
                       value={formData.fullName}
                       onChange={e => setFormData({...formData, fullName: e.target.value})}
-                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all text-sm sm:text-base min-h-[44px]" 
                       placeholder="John Doe" 
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Phone Number</label>
+                    <label className="block text-xs sm:text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Phone Number</label>
                     <input 
                       required type="tel" 
                       value={formData.phone}
                       onChange={e => setFormData({...formData, phone: e.target.value})}
-                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                      className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all text-sm sm:text-base min-h-[44px]" 
                       placeholder="+91 98765 43210" 
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Email Address</label>
+                  <label className="block text-xs sm:text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">Email Address</label>
                   <input 
                     required type="email" 
                     value={formData.email}
                     onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all" 
+                    className="w-full px-4 py-3 bg-beige-50 rounded-sm border border-gray-200 focus:ring-1 focus:ring-navy-900 focus:border-navy-900 outline-none transition-all text-sm sm:text-base min-h-[44px]" 
                     placeholder="john@example.com" 
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">What are you looking for?</label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className="block text-xs sm:text-sm font-bold text-navy-900 mb-2 uppercase tracking-wide">What are you looking for?</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     {propertyOptions.map((option) => (
                       <div 
                         key={option}
                         onClick={() => setFormData({...formData, lookingFor: option})}
-                        className={`flex items-center gap-3 p-4 rounded-sm border cursor-pointer transition-all ${
+                        className={`flex items-center gap-3 p-3.5 sm:p-4 rounded-sm border cursor-pointer transition-all min-h-[44px] ${
                           formData.lookingFor === option
                             ? 'border-gold-500 bg-beige-100'
                             : 'border-gray-200 bg-white hover:border-gold-400 hover:bg-beige-50'
@@ -162,7 +162,7 @@ export function Consultation() {
                         ) : (
                           <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />
                         )}
-                        <span className={`text-sm font-bold ${formData.lookingFor === option ? 'text-navy-900' : 'text-gray-600'}`}>
+                        <span className={`text-xs sm:text-sm font-bold ${formData.lookingFor === option ? 'text-navy-900' : 'text-gray-600'}`}>
                           {option}
                         </span>
                       </div>
@@ -173,7 +173,7 @@ export function Consultation() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-navy-900 hover:bg-navy-800 text-white font-bold py-4 rounded-sm transition-colors mt-4 flex items-center justify-center gap-2 group disabled:opacity-75"
+                  className="w-full bg-navy-900 hover:bg-navy-800 text-white font-bold py-3.5 sm:py-4 rounded-sm transition-colors mt-4 flex items-center justify-center gap-2 group disabled:opacity-75 min-h-[44px] text-base"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -188,13 +188,13 @@ export function Consultation() {
             )}
           </div>
 
-          <div className="lg:col-span-2 bg-navy-900 text-white p-8 md:p-12 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="lg:col-span-2 bg-navy-900 text-white p-6 sm:p-8 md:p-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             
-            <h4 className="text-2xl font-bold mb-8 text-gold-500">Consultation Includes</h4>
-            <ul className="space-y-4 mb-12 relative z-10">
+            <h4 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gold-500">Consultation Includes</h4>
+            <ul className="space-y-3.5 sm:space-y-4 mb-8 sm:mb-12 relative z-10">
               {features.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-beige-100 text-sm font-medium">
+                <li key={idx} className="flex items-center gap-3 text-beige-100 text-xs sm:text-sm font-medium">
                   <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-3 h-3 text-gold-500" />
                   </div>
@@ -203,25 +203,25 @@ export function Consultation() {
               ))}
             </ul>
 
-            <div className="border-t border-white/10 pt-8 relative z-10">
-              <h4 className="text-lg font-bold mb-6 text-gold-500">Direct Contact</h4>
-              <div className="space-y-5">
-                <a href="tel:+919742636365" className="flex items-center gap-4 hover:text-gold-400 transition-colors">
-                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+            <div className="border-t border-white/10 pt-6 sm:pt-8 relative z-10">
+              <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-500">Direct Contact</h4>
+              <div className="space-y-4 sm:space-y-5">
+                <a href="tel:+919742636365" className="flex items-center gap-3 sm:gap-4 hover:text-gold-400 transition-colors">
+                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0">
                     <Phone className="w-4 h-4 text-gold-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold tracking-wide">+91 9742636365</p>
-                    <p className="text-xs text-beige-200">Call for immediate assistance</p>
+                    <p className="text-xs sm:text-sm font-bold tracking-wide">+91 9742636365</p>
+                    <p className="text-[11px] sm:text-xs text-beige-200">Call for immediate assistance</p>
                   </div>
                 </a>
-                <a href="mailto:Aashirwadrealtorss@gmail.com" className="flex items-center gap-4 hover:text-gold-400 transition-colors">
-                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                <a href="mailto:Aashirwadrealtorss@gmail.com" className="flex items-center gap-3 sm:gap-4 hover:text-gold-400 transition-colors">
+                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0">
                     <Mail className="w-4 h-4 text-gold-500" />
                   </div>
-                  <div>
-                    <p className="text-sm font-bold tracking-wide">Email Us</p>
-                    <p className="text-xs text-beige-200 break-all">Aashirwadrealtorss@gmail.com</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-bold tracking-wide">Email Us</p>
+                    <p className="text-[11px] sm:text-xs text-beige-200 break-all">Aashirwadrealtorss@gmail.com</p>
                   </div>
                 </a>
               </div>

@@ -14,3 +14,9 @@
   --color-beige-100: #F5F0E6;
   --color-beige-200: #EAE0CE;
 }
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
