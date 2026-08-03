@@ -4,13 +4,37 @@ import { supabase } from '../lib/supabase';
 import bcrypt from 'bcryptjs';
 
 /**
+ * Safely parse a date input (string, Date, or number) ensuring string timestamps
+ * without offset are treated as UTC timestamps.
+ */
+const parseAsUTC = (dateInput: string | Date | number | null | undefined): Date | null => {
+  if (!dateInput) return null;
+  if (dateInput instanceof Date) return dateInput;
+  if (typeof dateInput === 'number') return new Date(dateInput);
+
+  let str = String(dateInput).trim();
+  if (!str) return null;
+
+  // Replace space between date and time with 'T' (e.g., "2026-08-03 05:12:00" -> "2026-08-03T05:12:00")
+  str = str.replace(/^(\d{4}-\d{2}-\d{2})\s+(\d{2}:)/, '$1T$2');
+
+  // If the string lacks a timezone offset indicator (Z, +HH:MM, or -HH:MM), append 'Z' so JS treats it as UTC
+  const hasTimezoneOffset = /[Zz]$|[+-]\d{2}:?\d{2}$/.test(str);
+  if (!hasTimezoneOffset) {
+    str += 'Z';
+  }
+
+  const date = new Date(str);
+  return isNaN(date.getTime()) ? null : date;
+};
+
+/**
  * Format timestamp into Indian Standard Time (Asia/Kolkata)
- * Example output: "03 Aug 2026, 05:30 PM"
+ * Example output: "03 Aug 2026, 10:42 AM"
  */
 const formatInIST = (dateInput: string | Date | number | null | undefined): string => {
-  if (!dateInput) return 'N/A';
-  const date = new Date(dateInput);
-  if (isNaN(date.getTime())) return 'N/A';
+  const date = parseAsUTC(dateInput);
+  if (!date) return 'N/A';
 
   try {
     return new Intl.DateTimeFormat('en-IN', {
@@ -29,12 +53,11 @@ const formatInIST = (dateInput: string | Date | number | null | undefined): stri
 
 /**
  * Format timestamp into Indian Standard Time (Asia/Kolkata) with seconds for reports.
- * Example output: "03/08/2026, 05:30:00 PM IST"
+ * Example output: "03/08/2026, 10:42:00 AM IST"
  */
 const formatInISTDetailed = (dateInput: string | Date | number | null | undefined): string => {
-  if (!dateInput) return 'N/A';
-  const date = new Date(dateInput);
-  if (isNaN(date.getTime())) return 'N/A';
+  const date = parseAsUTC(dateInput);
+  if (!date) return 'N/A';
 
   try {
     return new Intl.DateTimeFormat('en-IN', {
@@ -56,8 +79,8 @@ const formatInISTDetailed = (dateInput: string | Date | number | null | undefine
  * Get YYYY-MM-DD date string in Asia/Kolkata timezone for filtering.
  */
 const getISTDateString = (dateInput: string | Date | number): string => {
-  const date = new Date(dateInput);
-  if (isNaN(date.getTime())) return '';
+  const date = parseAsUTC(dateInput);
+  if (!date) return '';
   try {
     return new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Kolkata',
