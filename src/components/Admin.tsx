@@ -1,8 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
 import { Shield, LogOut, Loader2, Save, XCircle, Search, Calendar, Filter, RotateCcw, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import bcrypt from 'bcryptjs';
+
+/**
+ * Format timestamp into Indian Standard Time (Asia/Kolkata)
+ * Example output: "03 Aug 2026, 05:30 PM"
+ */
+const formatInIST = (dateInput: string | Date | number | null | undefined): string => {
+  if (!dateInput) return 'N/A';
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return 'N/A';
+
+  try {
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(date);
+  } catch (e) {
+    return 'N/A';
+  }
+};
+
+/**
+ * Format timestamp into Indian Standard Time (Asia/Kolkata) with seconds for reports.
+ * Example output: "03/08/2026, 05:30:00 PM IST"
+ */
+const formatInISTDetailed = (dateInput: string | Date | number | null | undefined): string => {
+  if (!dateInput) return 'N/A';
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return 'N/A';
+
+  try {
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }).format(date);
+  } catch (e) {
+    return 'N/A';
+  }
+};
+
+/**
+ * Get YYYY-MM-DD date string in Asia/Kolkata timezone for filtering.
+ */
+const getISTDateString = (dateInput: string | Date | number): string => {
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return '';
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(date);
+  } catch (e) {
+    return '';
+  }
+};
 
 export function Admin() {
   const [username, setUsername] = useState('');
@@ -141,18 +207,14 @@ export function Admin() {
 
       // From Date
       if (fromDate) {
-        const itemDate = new Date(item.createdAt || item.created_at);
-        const start = new Date(fromDate);
-        start.setHours(0, 0, 0, 0);
-        if (isNaN(itemDate.getTime()) || itemDate < start) return false;
+        const itemISTDate = getISTDateString(item.createdAt || item.created_at);
+        if (!itemISTDate || itemISTDate < fromDate) return false;
       }
 
       // To Date
       if (toDate) {
-        const itemDate = new Date(item.createdAt || item.created_at);
-        const end = new Date(toDate);
-        end.setHours(23, 59, 59, 999);
-        if (isNaN(itemDate.getTime()) || itemDate > end) return false;
+        const itemISTDate = getISTDateString(item.createdAt || item.created_at);
+        if (!itemISTDate || itemISTDate > toDate) return false;
       }
 
       return true;
@@ -194,7 +256,8 @@ export function Admin() {
       const email = item.email || 'N/A';
       const buyerType = item.category || item.buyerType || item.lookingFor || 'N/A';
       const score = item.score !== undefined && item.score !== null ? item.score : (item.marks || 'N/A');
-      const createdDate = item.createdAt ? format(new Date(item.createdAt), 'yyyy-MM-dd HH:mm:ss') : 'N/A';
+      const rawDate = item.createdAt || item.created_at;
+      const createdDate = rawDate ? formatInISTDetailed(rawDate) : 'N/A';
 
       return [name, phone, email, buyerType, score, createdDate];
     });
@@ -214,7 +277,7 @@ export function Admin() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${activeTab}_report_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.download = `${activeTab}_report_${getISTDateString(new Date())}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -317,8 +380,8 @@ export function Admin() {
               )}
             </div>
             <div className="sm:text-right">
-              <p className="text-[11px] sm:text-xs text-gray-400">Created: {format(new Date(item.createdAt), 'PP p')}</p>
-              <p className="text-[11px] sm:text-xs text-gray-400">Updated: {format(new Date(item.updatedAt), 'PP p')}</p>
+              <p className="text-[11px] sm:text-xs text-gray-400">Created: {formatInIST(item.createdAt || item.created_at)}</p>
+              <p className="text-[11px] sm:text-xs text-gray-400">Updated: {formatInIST(item.updatedAt || item.updated_at)}</p>
             </div>
           </div>
           <div className="bg-gray-50 p-3 sm:p-4 rounded text-xs sm:text-sm overflow-x-auto">
